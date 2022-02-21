@@ -1,10 +1,25 @@
 //
 // imports
-import { act } from "@testing-library/react";
-import { INCREASE, DECREASE, CLEAR_CART, REMOVE, GET_TOTALS } from "./actions";
+// import { act } from "@testing-library/react";
+import {
+  INCREASE,
+  DECREASE,
+  CLEAR_CART,
+  REMOVE,
+  GET_TOTALS,
+  TOGGLE_AMOUNT,
+} from "./actions";
+import cartItems from "./cart-items";
+
 // imports
 
-function reducer(state, action) {
+const initialStore = {
+  cart: cartItems,
+  total: 0,
+  amount: 0,
+};
+
+function reducer(state = initialStore, action) {
   //   switch (action.type) {
   //     case CLEAR_CART:
   //       return { ...state, cart: [] };
@@ -74,7 +89,22 @@ function reducer(state, action) {
       amount,
     };
   }
-
+  if (action.type === TOGGLE_AMOUNT) {
+    return {
+      ...state,
+      cart: state.cart.map((cartItem) => {
+        if (cartItem.id === action.payload.id) {
+          if (action.payload.toggle === "inc") {
+            return (cartItem = { ...cartItem, amount: cartItem.amount + 1 });
+          }
+          if (action.payload.toggle === "dec") {
+            return (cartItem = { ...cartItem, amount: cartItem.amount - 1 });
+          }
+        }
+        return cartItem;
+      }),
+    };
+  }
   return state;
 }
 
